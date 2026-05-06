@@ -58,3 +58,24 @@ export async function fetchStockHistory(code, exchange) {
   if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
 }
+
+export async function fetchVolatilityEvents(code) {
+  const res = await fetch(`${API_BASE}/legendary-stocks/${encodeURIComponent(code)}/volatility`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+export async function detectLegendaryStock(code, exchange, options = {}) {
+  const res = await fetch(`${API_BASE}/detect-legendary`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      code,
+      exchange,
+      windowDays: options.windowDays || 20,
+      riseThreshold: options.riseThreshold || 50,
+    }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useId } from 'react';
-import { fetchStockHistory } from '../services/api';
+import { fetchStockHistory, fetchVolatilityEvents } from '../services/api';
 
 function buildPath(points, width, height, padL, padR, padT, padB) {
   if (!points.length) return '';
@@ -31,6 +31,8 @@ export default function LegendaryStockDetail({ stock, onClose }) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
   const [series, setSeries] = useState(null);
+  const [volEvents, setVolEvents] = useState([]);
+  const [volLoading, setVolLoading] = useState(false);
   const fillGradId = useId().replace(/:/g, '');
 
   useEffect(() => {
@@ -47,6 +49,25 @@ export default function LegendaryStockDetail({ stock, onClose }) {
         if (!cancelled) setErr(e.message || '加载失败');
       } finally {
         if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [stock]);
+
+  useEffect(() => {
+    if (!stock) return undefined;
+    let cancelled = false;
+    (async () => {
+      setVolLoading(true);
+      try {
+        const data = await fetchVolatilityEvents(stock.code);
+        if (!cancelled) setVolEvents(data.events || []);
+      } catch (e) {
+        if (!cancelled) console.error('加载波动事件失败:', e);
+      } finally {
+        if (!cancelled) setVolLoading(false);
       }
     })();
     return () => {
@@ -244,6 +265,52 @@ export default function LegendaryStockDetail({ stock, onClose }) {
                 <span className="ls-outcome-label">后续概况</span>
                 {stock.outcome}
               </p>
+            )}
+          </div>
+
+          {(stock.peak_price || stock.low_price) && (
+            <div className="lsd-volatility-summary">
+              <h4 className="lsd-vol-title">剧烈波动概要</h4>
+              <div className="lsd-vol-cards">
+                <div className="lsd-vol-card lsd-vol-peak">
+                  <span className="lsd-vol-label">历史高点</span>
+                  <span className="lsd-vol-price">{stock.peak_price ? `¥${stock.peak_price.toFixed(2)}` : '—'}</span>
+                  <span className="lsd-vol-date">{stock.peak_date || '—'}</span>
+                </div>
+                <div className="lsd-vol-card lsd-vol-low">
+                  <span className="lsd-vol-label">历史低点</span>
+                  <span className="lsd-vol-price">{stock.low_price ? `¥${stock.low_price.toFixed(2)}` : '—'}</span>
+                  <span className="lsd-vol-date">{stock.low_date || '—'}</span>
+                </div>
+                <div className={`lsd-vol-card ${stock.peak_rise_pct >= 0 ? 'lsd-vol-up' : 'lsd-vol-down'}`}>
+                  <span className="lsd-vol-label">峰值涨幅/跌幅</span>
+                  <span className="lsd-vol-pct">{stock.peak_rise_pct != null ? `${stock.peak_rise_pct >= 0 ? '+' : ''}${stock.peak_rise_pct.toFixed(1)}%` : '—'}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="lsd-events">
+            <h4 className="lsd-events-title">关键波动时间线</h4>
+            {volLoading && <div className="lsd-events-loading">加载中...</div>}
+            {!volLoading && volEvents.length === 0 && (
+              <div className="lsd-events-empty">暂无波动事件记录</div>
+            )}
+            {!volLoading && volEvents.length > 0 && (
+              <ul className="lsd-events-list">
+                {volEvents.map(evt => (
+                  <li key={evt.id} className={`lsd-event-item lsd-event-${evt.event_type}`}>
+                    <div className="lsd-event-head">
+                      <span className="lsd-event-date">{evt.event_date}</span>
+                      <span className="lsd-event-price">¥{evt.price ? evt.price.toFixed(2) : '—'}</span>
+                      <span className={evt.change_pct >= 0 ? 'lsd-event-change lsd-event-up' : 'lsd-event-change lsd-event-down'}>
+                        {evt.change_pct != null ? `${evt.change_pct >= 0 ? '+' : ''}${evt.change_pct.toFixed(1)}%` : '—'}
+                      </span>
+                    </div>
+                    <p className="lsd-event-desc">{evt.description}</p>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         </div>

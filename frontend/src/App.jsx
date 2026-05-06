@@ -5,6 +5,7 @@ import PolicyCard from './components/PolicyCard';
 import Timeline from './components/Timeline';
 import LiquidityTools from './components/LiquidityTools';
 import LegendaryStocks from './components/LegendaryStocks';
+import LegendaryDetector from './components/LegendaryDetector';
 import DataManager from './components/DataManager';
 import { fetchPolicies, fetchStats, triggerCollect } from './services/api';
 
@@ -57,6 +58,7 @@ export default function App() {
             <button className={viewMode === 'timeline' ? 'active' : ''} onClick={() => setViewMode('timeline')}>时间线</button>
             <button className={viewMode === 'tools' ? 'active' : ''} onClick={() => setViewMode('tools')}>货币政策工具</button>
             <button className={viewMode === 'legendary' ? 'active' : ''} onClick={() => setViewMode('legendary')}>历史上的妖股</button>
+            <button className={viewMode === 'detector' ? 'active' : ''} onClick={() => setViewMode('detector')}>妖股检测</button>
             <button className={viewMode === 'manage' ? 'active' : ''} onClick={() => setViewMode('manage')}>数据管理</button>
           </div>
         </div>
@@ -73,6 +75,8 @@ export default function App() {
           <DataManager />
         ) : viewMode === 'legendary' ? (
           <LegendaryStocks />
+        ) : viewMode === 'detector' ? (
+          <LegendaryDetector />
         ) : viewMode === 'tools' ? (
           <LiquidityTools />
         ) : loading ? (

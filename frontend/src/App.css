@@ -1249,8 +1249,177 @@ button.ls-card {
   line-height: 1.55;
 }
 
+/* ========== Volatility Summary ========== */
+.lsd-volatility-summary {
+  margin: 18px 0;
+  padding: 16px;
+  background: linear-gradient(135deg, #fdf2f2 0%, #fff5f5 100%);
+  border-radius: 10px;
+  border: 1px solid #fde8e8;
+}
+
+.lsd-vol-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #c0392b;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #fde8e8;
+}
+
+.lsd-vol-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.lsd-vol-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.lsd-vol-label {
+  display: block;
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.lsd-vol-price {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+
+.lsd-vol-date {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.lsd-vol-pct {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.lsd-vol-up {
+  color: #e74c3c;
+}
+
+.lsd-vol-down {
+  color: #27ae60;
+}
+
+/* ========== Volatility Events Timeline ========== */
+.lsd-events {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed #eee;
+}
+
+.lsd-events-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 12px;
+}
+
+.lsd-events-loading {
+  text-align: center;
+  padding: 24px;
+  color: #888;
+  font-size: 14px;
+}
+
+.lsd-events-empty {
+  text-align: center;
+  padding: 24px;
+  color: #bbb;
+  font-size: 13px;
+}
+
+.lsd-events-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lsd-event-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-left: 4px solid #ddd;
+}
+
+.lsd-event-peak { border-left-color: #e74c3c; }
+.lsd-event-bottom { border-left-color: #27ae60; }
+.lsd-event-crash { border-left-color: #9b59b6; }
+.lsd-event-surge { border-left-color: #f39c12; }
+.lsd-event-listing { border-left-color: #3498db; }
+.lsd-event-start { border-left-color: #95a5a6; }
+.lsd-event-delisted { border-left-color: #7f8c8d; }
+
+.lsd-event-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.lsd-event-date {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2d3436;
+  font-variant-numeric: tabular-nums;
+}
+
+.lsd-event-price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.lsd-event-change {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.lsd-event-up {
+  background: #fde8e8;
+  color: #c0392b;
+}
+
+.lsd-event-down {
+  background: #d5f5e3;
+  color: #27ae60;
+}
+
+.lsd-event-desc {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.55;
+  margin: 0;
+}
+
 @media (max-width: 640px) {
   .lsd-stats {
+    grid-template-columns: 1fr;
+  }
+  .lsd-vol-cards {
     grid-template-columns: 1fr;
   }
 }
@@ -1260,3 +1429,277 @@ button.ls-card {
   .td-summary { grid-template-columns: repeat(2, 1fr); }
   .td-header { flex-direction: column; gap: 12px; }
 }
+
+/* ========== Legendary Detector / 妖股检测 ========== */
+.ld-container {
+  animation: fadeIn 0.25s ease;
+}
+
+.ld-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.ld-desc {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.ld-form {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  margin-bottom: 20px;
+}
+
+.ld-form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.ld-form-row:last-child {
+  margin-bottom: 0;
+}
+
+.ld-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.ld-field label {
+  font-size: 12px;
+  color: #888;
+  font-weight: 600;
+}
+
+.ld-field input,
+.ld-field select {
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.ld-field input:focus,
+.ld-field select:focus {
+  outline: none;
+  border-color: #c0392b;
+}
+
+.ld-btn-field {
+  justify-content: flex-end;
+}
+
+.ld-btn-detect {
+  padding: 9px 24px;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ld-btn-detect:hover {
+  background: #a93226;
+}
+
+.ld-btn-detect:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ld-error {
+  text-align: center;
+  padding: 24px;
+  color: #e74c3c;
+  font-weight: 600;
+  background: #fff5f5;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.ld-result {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  margin-bottom: 16px;
+}
+
+.ld-result-legendary {
+  border-left: 5px solid #e74c3c;
+  background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+}
+
+.ld-result-normal {
+  border-left: 5px solid #27ae60;
+}
+
+.ld-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.ld-result-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.ld-result-legendary .ld-result-title {
+  color: #e74c3c;
+}
+
+.ld-result-normal .ld-result-title {
+  color: #27ae60;
+}
+
+.ld-result-code {
+  font-size: 14px;
+  color: #888;
+  font-weight: 600;
+}
+
+.ld-result-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ld-summary-item {
+  background: #f8f9fb;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.ld-summary-label {
+  display: block;
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ld-summary-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3436;
+}
+
+.ld-summary-value.ld-up {
+  color: #e74c3c;
+}
+
+.ld-result-period {
+  background: #f8f9fb;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.ld-period-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 10px 0;
+}
+
+.ld-period-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ld-period-info > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ld-period-label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+}
+
+.ld-period-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d3436;
+}
+
+.ld-price-end {
+  color: #e74c3c;
+}
+
+.ld-period-arrow {
+  font-size: 20px;
+  color: #c0392b;
+  font-weight: 700;
+}
+
+.ld-result-reason {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 12px 0;
+  padding: 10px 12px;
+  background: #f8f9fb;
+  border-radius: 6px;
+}
+
+.ld-result-latest {
+  font-size: 14px;
+  color: #555;
+}
+
+.ld-result-latest strong {
+  color: #1a1a2e;
+  font-size: 16px;
+}
+
+.ld-hint {
+  margin-top: 14px;
+  padding: 12px;
+  background: #fff3cd;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #856404;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .ld-form-row {
+    flex-direction: column;
+  }
+  .ld-result-summary {
+    grid-template-columns: 1fr;
+  }
+  .ld-period-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ld-period-arrow {
+    transform: rotate(90deg);
+  }
+}
+
