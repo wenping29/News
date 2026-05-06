@@ -43,6 +43,20 @@ const SCHEMA = `
     created_at TEXT DEFAULT (datetime('now', 'localtime'))
   );
   CREATE INDEX IF NOT EXISTS idx_tool_ops_tool ON tool_operations(tool_id);
+
+  CREATE TABLE IF NOT EXISTS legendary_stocks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    code TEXT NOT NULL,
+    exchange TEXT DEFAULT '',
+    period TEXT DEFAULT '',
+    rise_note TEXT DEFAULT '',
+    theme TEXT DEFAULT '',
+    story TEXT DEFAULT '',
+    outcome TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0
+  );
+  CREATE INDEX IF NOT EXISTS idx_legendary_sort ON legendary_stocks(sort_order);
 `;
 
 // ========== 种子数据 ==========
@@ -133,6 +147,158 @@ function seedToolOperations() {
   saveDB();
 }
 
+// ========== 历史上的妖股（教育向整理，非投资建议）==========
+const SEED_LEGENDARY = [
+  {
+    name: '中国石油',
+    code: '601857',
+    exchange: '上交所',
+    period: '2007年',
+    rise_note: 'A股 IPO 体量极大',
+    theme: '蓝筹上市',
+    story: '2007 年 11 月回归 A 股上市，上市初期换手与定价备受关注，之后较长周期走势成为“新股与周期”讨论中的常见案例。',
+    outcome: '长期回调后低位震荡（历史走势，不代表未来）',
+    sort_order: 10,
+  },
+  {
+    name: '中国船舶',
+    code: '600150',
+    exchange: '上交所',
+    period: '2007年前后',
+    rise_note: '周期高位剧烈波动',
+    theme: '造船周期 / 重组预期',
+    story: '叠加行业景气与资产重组预期，曾在市场情绪高涨阶段出现极端涨幅与波动，随后随周期与预期修正大幅回撤。',
+    outcome: '深度回撤后随行业周期波动',
+    sort_order: 20,
+  },
+  {
+    name: '特力A',
+    code: '000025',
+    exchange: '深交所',
+    period: '2015年',
+    rise_note: '短期连续涨停（投机情绪）',
+    theme: '国企改革 / 题材炒作',
+    story: '2015 年行情中多次出现连续涨停，换手与波动极高，常被作为“题材驱动、流动性博弈”的案例提及。',
+    outcome: '监管与市场冷却后波动收敛',
+    sort_order: 30,
+  },
+  {
+    name: '全通教育',
+    code: '300359',
+    exchange: '深交所创业板',
+    period: '2015年',
+    rise_note: '高价股与估值争议',
+    theme: '互联网+教育',
+    story: '在线教育概念高峰期估值与股价同步抬升，市值一度引发广泛讨论，后续业绩与估值回归成为创业板典型案例之一。',
+    outcome: '估值回落、长期走势分化',
+    sort_order: 40,
+  },
+  {
+    name: '暴风集团',
+    code: '300431',
+    exchange: '深交所创业板',
+    period: '2015年前后',
+    rise_note: '次新股与概念共振',
+    theme: 'VR / 视频生态',
+    story: '上市初期叠加题材热度出现剧烈波动；其后经营与合规问题暴露，退市风险教育意义突出。',
+    outcome: '退市（风险警示案例）',
+    sort_order: 50,
+  },
+  {
+    name: '乐视网',
+    code: '300104',
+    exchange: '深交所创业板',
+    period: '2015年前后',
+    rise_note: '生态故事与杠杆扩张',
+    theme: '互联网生态 / 硬件补贴',
+    story: '高预期与高扩张并行，股价曾在乐观周期走强；资金链与治理问题爆发后风险急剧暴露。',
+    outcome: '退市（公司治理与财务风险案例）',
+    sort_order: 60,
+  },
+  {
+    name: '东方通信',
+    code: '600776',
+    exchange: '上交所',
+    period: '2018-2019年',
+    rise_note: '连板与放量',
+    theme: '5G 题材映射',
+    story: '市场将其作为 5G 情绪映射标的之一，出现连续涨停与极高关注度；基本面与题材落差常被复盘讨论。',
+    outcome: '题材冷却后大幅回吐涨幅',
+    sort_order: 70,
+  },
+  {
+    name: '中潜股份',
+    code: '300526',
+    exchange: '深交所创业板',
+    period: '2020年',
+    rise_note: '跨界题材剧烈波动',
+    theme: '跨界并购 / 概念炒作',
+    story: '因跨界热点预期出现短期暴涨，监管问询与信息披露问题随后引发剧烈反转。',
+    outcome: '监管处罚与股价重挫（合规案例）',
+    sort_order: 80,
+  },
+  {
+    name: '仁东控股',
+    code: '002647',
+    exchange: '深交所',
+    period: '2020年',
+    rise_note: '闪崩与流动性枯竭',
+    theme: '庄股质疑 / 控盘争议',
+    story: '长期逆势上涨后突发连续跌停，融资盘与流动性冲击放大跌幅，被视为“筹码结构与风控”研究素材。',
+    outcome: '剧烈下跌后整理',
+    sort_order: 90,
+  },
+  {
+    name: '九安医疗',
+    code: '002432',
+    exchange: '深交所',
+    period: '2021-2022年',
+    rise_note: '订单预期驱动暴涨',
+    theme: '新冠检测 / 海外订单',
+    story: '海外订单预期与公告披露节奏叠加，股价短期剧烈上行；预期修正阶段波动加大。',
+    outcome: '高位回落、波动仍高',
+    sort_order: 100,
+  },
+];
+
+function seedLegendaryStocks() {
+  try {
+    const row = db.exec('SELECT COUNT(*) as cnt FROM legendary_stocks');
+    const count = row.length > 0 ? row[0].values[0][0] : 0;
+    if (count > 0) return;
+  } catch (e) {
+    return;
+  }
+
+  console.log('正在初始化「历史上的妖股」种子数据...');
+  let inserted = 0;
+  const stmt = db.prepare(
+    `INSERT INTO legendary_stocks (name, code, exchange, period, rise_note, theme, story, outcome, sort_order)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+  for (const s of SEED_LEGENDARY) {
+    try {
+      stmt.run([
+        s.name,
+        s.code,
+        s.exchange || '',
+        s.period || '',
+        s.rise_note || '',
+        s.theme || '',
+        s.story || '',
+        s.outcome || '',
+        s.sort_order ?? 0,
+      ]);
+      inserted++;
+    } catch (e) {
+      console.error(`插入妖股种子失败 (${s.code}):`, e.message);
+    }
+  }
+  stmt.free();
+  console.log(`已插入 ${inserted}/${SEED_LEGENDARY.length} 条妖股案例`);
+  saveDB();
+}
+
 function migrateSchema() {
   const tableInfo = db.exec("SELECT sql FROM sqlite_master WHERE type='table' AND name='policies'");
   if (tableInfo.length > 0) {
@@ -161,6 +327,7 @@ async function initDB() {
   db.exec(SCHEMA);
   migrateSchema();
   seedToolOperations();
+  seedLegendaryStocks();
   saveDB();
 }
 
@@ -284,6 +451,36 @@ function queryToolOperations(toolId) {
   return ops;
 }
 
+function queryLegendaryStocks({ q, exchange } = {}) {
+  const conditions = [];
+  const params = [];
+
+  if (exchange) {
+    conditions.push('exchange = ?');
+    params.push(exchange);
+  }
+  if (q) {
+    conditions.push(
+      '(name LIKE ? OR code LIKE ? OR theme LIKE ? OR story LIKE ? OR period LIKE ?)'
+    );
+    const like = `%${q}%`;
+    params.push(like, like, like, like, like);
+  }
+
+  const where = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
+  const stmt = db.prepare(
+    `SELECT * FROM legendary_stocks ${where} ORDER BY sort_order ASC, id ASC`
+  );
+  if (params.length > 0) stmt.bind(params);
+
+  const items = [];
+  while (stmt.step()) {
+    items.push(stmt.getAsObject());
+  }
+  stmt.free();
+  return { items };
+}
+
 function insertToolOperation(op) {
   // 去重：检查是否已存在相同记录
   const checkStmt = db.prepare(
@@ -316,4 +513,12 @@ function insertToolOperation(op) {
   return true;
 }
 
-module.exports = { initDB, batchInsert, queryPolicies, getStats, queryToolOperations, insertToolOperation };
+module.exports = {
+  initDB,
+  batchInsert,
+  queryPolicies,
+  getStats,
+  queryToolOperations,
+  insertToolOperation,
+  queryLegendaryStocks,
+};

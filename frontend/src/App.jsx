@@ -4,6 +4,7 @@ import FilterBar from './components/FilterBar';
 import PolicyCard from './components/PolicyCard';
 import Timeline from './components/Timeline';
 import LiquidityTools from './components/LiquidityTools';
+import LegendaryStocks from './components/LegendaryStocks';
 import DataManager from './components/DataManager';
 import { fetchPolicies, fetchStats, triggerCollect } from './services/api';
 
@@ -34,8 +35,10 @@ export default function App() {
   }, [filters, page]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    if (viewMode === 'list' || viewMode === 'timeline') {
+      loadData();
+    }
+  }, [loadData, viewMode]);
 
   const handleCollect = async () => {
     await triggerCollect();
@@ -53,18 +56,23 @@ export default function App() {
             <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}>列表</button>
             <button className={viewMode === 'timeline' ? 'active' : ''} onClick={() => setViewMode('timeline')}>时间线</button>
             <button className={viewMode === 'tools' ? 'active' : ''} onClick={() => setViewMode('tools')}>货币政策工具</button>
+            <button className={viewMode === 'legendary' ? 'active' : ''} onClick={() => setViewMode('legendary')}>历史上的妖股</button>
             <button className={viewMode === 'manage' ? 'active' : ''} onClick={() => setViewMode('manage')}>数据管理</button>
           </div>
         </div>
       </header>
 
       <main className="app-main">
-        {stats && <Dashboard stats={stats} />}
+        {viewMode !== 'legendary' && stats && <Dashboard stats={stats} />}
 
-        <FilterBar filters={filters} onChange={setFilters} onPageReset={() => setPage(1)} />
+        {(viewMode === 'list' || viewMode === 'timeline') && (
+          <FilterBar filters={filters} onChange={setFilters} onPageReset={() => setPage(1)} />
+        )}
 
         {viewMode === 'manage' ? (
           <DataManager />
+        ) : viewMode === 'legendary' ? (
+          <LegendaryStocks />
         ) : viewMode === 'tools' ? (
           <LiquidityTools />
         ) : loading ? (

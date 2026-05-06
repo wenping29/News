@@ -36,3 +36,25 @@ export async function fetchToolOperations(toolId) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
+
+export async function fetchLegendaryStocks({ q, exchange } = {}) {
+  const params = new URLSearchParams();
+  if (q) params.set('q', q);
+  if (exchange) params.set('exchange', exchange);
+  const qs = params.toString();
+  const res = await fetch(`${API_BASE}/legendary-stocks${qs ? `?${qs}` : ''}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+export async function fetchStockHistory(code, exchange) {
+  const params = new URLSearchParams();
+  if (exchange) params.set('exchange', exchange);
+  const qs = params.toString();
+  const res = await fetch(
+    `${API_BASE}/stocks/${encodeURIComponent(code)}/history${qs ? `?${qs}` : ''}`
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}

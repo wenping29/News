@@ -1,7 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { queryPolicies, getStats, queryToolOperations, insertToolOperation } = require('../database');
+const {
+  queryPolicies,
+  getStats,
+  queryToolOperations,
+  insertToolOperation,
+  queryLegendaryStocks,
+} = require('../database');
 const { collectAll } = require('../collectors/scheduler');
+const { fetchMonthlyHistory } = require('../services/stockHistory');
 
 // 分页查询
 router.get('/policies', (req, res) => {
@@ -52,6 +59,26 @@ router.post('/tools/operations', (req, res) => {
     res.json({ message: '操作记录已保存' });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// 历史上的妖股（本地种子 + 可检索）
+router.get('/legendary-stocks', (req, res) => {
+  const { q, exchange } = req.query;
+  const result = queryLegendaryStocks({ q: q || '', exchange: exchange || '' });
+  res.json(result);
+});
+
+// A 股历史月线收盘（Yahoo 代理，仅供展示）
+router.get('/stocks/:code/history', async (req, res) => {
+  const { code } = req.params;
+  const { exchange } = req.query;
+  try {
+    const payload = await fetchMonthlyHistory(code, exchange);
+    res.json(payload);
+  } catch (err) {
+    const status = err.status || 502;
+    res.status(status).json({ error: err.message || '获取行情失败' });
   }
 });
 
